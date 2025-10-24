@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { QRCodeCanvas } from "qrcode.react";
+import QRCode from "react-qr-code";
 import { profile } from "@/lib/profile";
 
 export default function Home() {
@@ -56,7 +56,7 @@ export default function Home() {
 
         {/* QR code section */}
         <div className="bg-white rounded-2xl shadow p-4 flex flex-col items-center">
-          <QRCodeCanvas value={origin} size={160} />
+          <QRCode value={origin} size={160} />
           <p className="mt-2 text-sm text-gray-500">Scan to open this card</p>
         </div>
       </div>
