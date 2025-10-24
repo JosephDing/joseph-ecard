@@ -3,10 +3,13 @@
 import Image from "next/image";
 import QRCode from "react-qr-code";
 import { profile } from "@/lib/profile";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  const origin =
-    typeof window !== "undefined" ? window.location.origin : "https://example.com";
+  const [qrValue, setQrValue] = useState<string>("");
+  useEffect(() => {
+    setQrValue(window.location.origin);
+  }, []);
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -56,7 +59,7 @@ export default function Home() {
 
         {/* QR code section */}
         <div className="bg-white rounded-2xl shadow p-4 flex flex-col items-center">
-          <QRCode value={origin} size={160} />
+          {qrValue && <QRCode value={qrValue} size={160} />}
           <p className="mt-2 text-sm text-gray-500">Scan to open this card</p>
         </div>
       </div>
