@@ -1,65 +1,98 @@
+"use client";
+
 import Image from "next/image";
+import { QRCodeCanvas } from "qrcode.react";
+import { profile } from "@/lib/profile";
 
 export default function Home() {
+  const origin =
+    typeof window !== "undefined" ? window.location.origin : "https://example.com";
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="min-h-screen bg-gray-50">
+      {/* Blue header */}
+      <div className="bg-blue-500 pt-16 pb-8 flex flex-col items-center text-white">
+        <div className="w-28 h-28 rounded-full overflow-hidden ring-4 ring-white/40">
+          <Image
+            src={profile.photoUrl}
+            alt={profile.fullName}
+            width={112}
+            height={112}
+          />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <h1 className="mt-4 text-2xl font-semibold">{profile.fullName}</h1>
+        <button
+          className="mt-3 bg-white text-gray-900 px-4 py-2 rounded-full shadow hover:bg-gray-100"
+          onClick={() => window.location.assign("/api/vcard")}
+        >
+          + Add contact
+        </button>
+      </div>
+
+      {/* Info cards */}
+      <div className="max-w-md mx-auto px-4 -mt-6 pb-12 space-y-4">
+        <Section title="Contact">
+          <Field label="Phone" value={profile.phone} href={`tel:${profile.phone}`} />
+          <Field label="Email" value={profile.email} href={`mailto:${profile.email}`} />
+          <Field label="Website" value={profile.website} href={profile.website} />
+          <Field
+            label="Location"
+            value={`${profile.address.street}, ${profile.address.city}, ${profile.address.region}, ${profile.address.postalCode}, ${profile.address.country}`}
+          />
+        </Section>
+
+        <Section title="Company">
+          <Field label="Company" value={profile.company} />
+          <Field label="Title" value={profile.title} />
+        </Section>
+
+        <Section title="Summary">
+          <p className="text-gray-700">{profile.summary}</p>
+        </Section>
+
+        <Section title="Social media">
+          <Field label="LinkedIn" value="Linkedin" href={profile.linkedin} />
+        </Section>
+
+        {/* QR code section */}
+        <div className="bg-white rounded-2xl shadow p-4 flex flex-col items-center">
+          <QRCodeCanvas value={origin} size={160} />
+          <p className="mt-2 text-sm text-gray-500">Scan to open this card</p>
         </div>
-      </main>
+      </div>
+    </main>
+  );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="bg-white rounded-2xl shadow">
+      <div className="px-4 py-3 border-b">
+        <h2 className="font-medium">{title}</h2>
+      </div>
+      <div className="p-4 space-y-3">{children}</div>
     </div>
+  );
+}
+
+function Field({ label, value, href }: { label: string; value: string; href?: string }) {
+  const content = (
+    <div className="flex items-start justify-between">
+      <span className="text-gray-500">{label}:</span>
+      <span className="ml-3 text-gray-900 break-all">{value}</span>
+    </div>
+  );
+
+  return href ? (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      className="block hover:bg-gray-50 rounded-lg px-2 py-2 transition"
+    >
+      {content}
+    </a>
+  ) : (
+    <div className="px-2 py-2">{content}</div>
   );
 }
