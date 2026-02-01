@@ -1,6 +1,6 @@
 export const profile = {
   fullName: "Joseph Ding",
-  title: "Tech Sales & FAE",
+  title: "Robotics Field Application Engineer",
   company: "CenoBots Inc",
   phone: "+1 (540) 824-8277",
   email: "joseph@cz-robots.com",
